@@ -1,5 +1,5 @@
-import { setUser } from "../config";
-import { createUser } from "../lib/db/queries/users";
+import { setUser, readConfig } from "../config";
+import { createUser, getUser, getUsers } from "../lib/db/queries/users";
 
 export async function handlerLogin(cmdName: string, ...args: string[]) {
     if (args.length !== 1) {
@@ -7,7 +7,12 @@ export async function handlerLogin(cmdName: string, ...args: string[]) {
     }
 
     const userName = args[0];
-    setUser(userName);
+    const existingUser = await getUser(userName);
+    if (!existingUser) {
+        throw new Error(`User ${userName} not found`);
+    }
+
+    setUser(existingUser.name);
     console.log("User switched successfully!");
 }
 
@@ -24,4 +29,17 @@ export async function handlerRegister(cmdName: string, ...args: string[]) {
 
     setUser(user.name);
     console.log("User created successfully!");
+}
+
+export async function handlerListUsers(_: string) {
+    const users = await getUsers();
+    const config = readConfig();
+
+    for (let user of users) {
+        if (user.name === config.currentUserName) {
+            console.log(`* ${user.name} (current)`);
+            continue;
+        }
+        console.log(`* ${user.name}`);
+    }
 }
