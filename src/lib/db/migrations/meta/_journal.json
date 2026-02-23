@@ -15,6 +15,13 @@
       "when": 1771724591683,
       "tag": "0001_empty_whizzer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771805884324,
+      "tag": "0002_watery_wiccan",
+      "breakpoints": true
     }
   ]
 }
