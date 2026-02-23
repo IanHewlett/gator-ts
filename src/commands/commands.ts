@@ -1,5 +1,4 @@
-import { getUsers } from "../lib/db/queries/users";
-import { readConfig } from "../config";
+import { User } from "src/lib/db/schema";
 
 export type CommandHandler = (
     cmdName: string,
@@ -29,15 +28,8 @@ export async function runCommand(
     await handler(cmdName, ...args);
 }
 
-export async function handlerListUsers(_: string) {
-    const users = await getUsers();
-    const config = readConfig();
-
-    for (let user of users) {
-        if (user.name === config.currentUserName) {
-            console.log(`* ${user.name} (current)`);
-            continue;
-        }
-        console.log(`* ${user.name}`);
-    }
-}
+export type UserCommandHandler = (
+    cmdName: string,
+    user: User,
+    ...args: string[]
+) => Promise<void> | void;
